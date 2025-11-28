@@ -311,7 +311,7 @@ def main():
 
     cheat_binaries_map = {
         "potassium": ["Potassium.exe", "Decompiler.exe"],
-        "severe": ["software.exe", "upgrade.exe"],
+        "severe": ["software.exe", "upgrade.exe", "authenticator.exe"],
         "assembly": ["client.exe"],
         "matcha": ["app.exe"],
         "volcano": ["VolcanoUI.exe", "VolcanoUpdater.exe"],
@@ -341,4 +341,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
