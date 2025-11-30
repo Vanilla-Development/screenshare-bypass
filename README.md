@@ -8,6 +8,7 @@ Matcha
 Volcano
 Matrixhub
 Ronin
+Bunni
 Prestige Client
 
 ## You don't need to install any extra python libraries because here are all the libraries used.
