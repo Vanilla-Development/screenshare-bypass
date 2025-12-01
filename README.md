@@ -17,3 +17,5 @@ ctypes, os, shutil, subprocess, sys, pathlib, tkinter -- these are all native py
 
 # Note
 The general purpose cleaner should work for most cheats but I'm mainly including cheats that make extra folders or specific traces that a screenshare tool can catch.
+
+Also please for the love of god, just in general download ccleaner and run the drive wiper on C: Drive so you can delete volume shadow copies
