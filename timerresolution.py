@@ -124,6 +124,11 @@ def cleanup(cheat_name: str, cheat_binaries, extra_paths):
         print(f"Deleting Ronin folder: {ronin_folder}...")
         safe_rmdir(str(ronin_folder))
 
+    if cheat_name == "bunni":
+        bunni_folder = localappdata / "com.bunni.app"
+        print(f"Deleting Bunni folder: {bunni_folder}...")
+        safe_rmdir(str(bunni_folder))
+
     print("Deleting BAM UserSettings for user accounts...")
     run(r"for /f \"tokens=*\" %%%%S in ('reg query \"HKLM\\SYSTEM\\CurrentControlSet\\Services\\bam\\State\\UserSettings\"') do reg delete \"%%%%S\" /f")
     print("BAM UserSettings cleanup attempted.")
@@ -138,7 +143,7 @@ def cleanup(cheat_name: str, cheat_binaries, extra_paths):
             except Exception:
                 pass
 
-    print("Cleaning Prefetch files for selected cheat...")
+    print("Cleaning specific Prefetch files for selected cheeto...")
     prefetch = Path("C:/Windows/Prefetch")
     if prefetch.is_dir() and cheat_names:
         for pf in prefetch.glob("*.pf"):
@@ -180,7 +185,7 @@ def cleanup(cheat_name: str, cheat_binaries, extra_paths):
     run(r"reg delete \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\ComDlg32\\OpenSavePidlMRU\" /f")
     run(r"reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\ComDlg32\\OpenSavePidlMRU\" /f")
 
-    print("Cleaning BagMRU and OpenSavePidlMRU subkeys...")
+    print("Cleaning specific BagMRU and OpenSavePidlMRU subkeys...")
     run(r"reg delete \"HKCU\\Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\BagMRU\\0\\3\\0\" /f")
     run(r"reg delete \"HKCU\\Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\BagMRU\\0\\3\" /f")
     run(r"reg delete \"HKCU\\Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\BagMRU\\0\" /f")
@@ -211,7 +216,7 @@ def cleanup(cheat_name: str, cheat_binaries, extra_paths):
     print("Cleaning DNS Cache...")
     run("ipconfig /flushdns")
 
-    print("Removing any remaining registry references (AppSwitched) for selected cheat...")
+    print("Removing any remaining registry references (AppSwitched) for selected cheeto...")
     for stem in cheat_names:
         cmd = (
             'reg query "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FeatureUsage\\AppSwitched" '
@@ -257,8 +262,8 @@ def cleanup(cheat_name: str, cheat_binaries, extra_paths):
     print("\n=======================================================")
     print("          Deep system cleanup completed!")
     print("=======================================================")
-    print("All traces for the selected cheat should be removed, including:")
-    print("- Known folders and any extra paths listed")
+    print("All traces for the selected cheeto should be removed, including:")
+    print("- Known folders and any extra paths you listed")
     print("- Prefetch, Explorer history, and related registry traces where possible")
     print("If you still see references, a system restart is recommended.\n")
 
@@ -286,7 +291,7 @@ def main():
             
     cheat = None
     while cheat is None:
-        print("Type out what cheat you're using.")
+        print("Type out what cheeto you're using.")
         if game == "roblox":
             valid = [
                 "potassium",
@@ -296,6 +301,7 @@ def main():
                 "volcano",
                 "matrix",
                 "ronin",
+                "bunni",
             ]
         else:
             valid = [
@@ -311,12 +317,13 @@ def main():
 
     cheat_binaries_map = {
         "potassium": ["Potassium.exe", "Decompiler.exe"],
-        "severe": ["software.exe", "upgrade.exe", "authenticator.exe"],
+        "severe": ["software.exe", "upgrade.exe"],
         "assembly": ["client.exe"],
         "matcha": ["app.exe"],
         "volcano": ["VolcanoUI.exe", "VolcanoUpdater.exe"],
         "matrix": ["newui.exe", "oldui.exe"],
         "ronin": ["RoninV3.exe", "ronin.exe", "yt-dlp.exe"],
+        "bunni": ["Bunni.exe", "bunni-installer.exe"],
         "prestige": ["Prestige-Injector.exe"],
     }
 
@@ -341,5 +348,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
