@@ -12,7 +12,7 @@ Bunni
 Prestige Client
 
 ## You don't need to install any extra python libraries because here are all the libraries used.
-ctypes, os, shutil, subprocess, sys, pathlib, tkinter -- these are all native python libraries
+ctypes, os, shutil, subprocess, sys, pathlib, tkinter, random -- these are all native python libraries
 
 
 # Note
