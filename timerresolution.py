@@ -4,6 +4,7 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+import random
 
 try:
     import tkinter as tk
@@ -78,6 +79,38 @@ def run(cmd: str):
         stderr=subprocess.DEVNULL,
         check=False,
     )
+
+
+def reg_delete_matches(base_key: str, cheat_names):
+    """Delete registry subkeys under base_key whose data matches any cheat name.
+
+    Uses `reg query` with /f <name> /d and deletes each matching HKEY path.
+    """
+    if not cheat_names:
+        return
+    for stem in cheat_names:
+        try:
+            proc = subprocess.run(
+                [
+                    "reg",
+                    "query",
+                    base_key,
+                    "/s",
+                    "/f",
+                    stem,
+                    "/d",
+                ],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+                text=True,
+                check=False,
+            )
+        except Exception:
+            continue
+        for line in proc.stdout.splitlines():
+            line = line.strip()
+            if line.upper().startswith("HKEY"):
+                run(f'reg delete "{line}" /f')
 
 
 def cleanup(cheat_name: str, cheat_binaries, extra_paths):
@@ -177,41 +210,66 @@ def cleanup(cheat_name: str, cheat_binaries, extra_paths):
     run(fr"del /f /q \"{(recent / 'AutomaticDestinations' / '*.automaticDestinations-ms')}\"")
     run(fr"del /f /q \"{(recent / 'CustomDestinations' / '*.customDestinations-ms')}\"")
 
-    print("Cleaning Shell BagMRU entries...")
-    run(r"reg delete \"HKCU\\Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\BagMRU\" /f")
-    run(r"reg add \"HKCU\\Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\BagMRU\" /f")
+    print("Cleaning Shell BagMRU entries (filtered by cheat names)...")
+    reg_delete_matches(
+        r"HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\BagMRU",
+        cheat_names,
+    )
 
-    print("Cleaning OpenSavePidlMRU entries...")
-    run(r"reg delete \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\ComDlg32\\OpenSavePidlMRU\" /f")
-    run(r"reg add \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\ComDlg32\\OpenSavePidlMRU\" /f")
-
-    print("Cleaning specific BagMRU and OpenSavePidlMRU subkeys...")
-    run(r"reg delete \"HKCU\\Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\BagMRU\\0\\3\\0\" /f")
-    run(r"reg delete \"HKCU\\Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\BagMRU\\0\\3\" /f")
-    run(r"reg delete \"HKCU\\Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\BagMRU\\0\" /f")
-    run(r"reg delete \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\ComDlg32\\OpenSavePidlMRU\\txt\" /f")
+    print("Cleaning OpenSavePidlMRU entries (filtered by cheat names)...")
+    reg_delete_matches(
+        r"HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\OpenSavePidlMRU",
+        cheat_names,
+    )
 
     print("Removing Windows Defender DisableAntiSpyware registry value...")
     run(r"reg delete \"HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows Defender\" /v DisableAntiSpyware /f")
 
-    print("Cleaning Windows Explorer history...")
-    run(r"reg delete \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\TypedPaths\" /f")
-    run(r"reg delete \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\RunMRU\" /f")
-    run(r"reg delete \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\RecentDocs\" /f")
+    print("Cleaning Windows Explorer history (TypedPaths/RunMRU/RecentDocs, filtered)...")
+    reg_delete_matches(
+        r"HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths",
+        cheat_names,
+    )
+    reg_delete_matches(
+        r"HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RunMRU",
+        cheat_names,
+    )
+    reg_delete_matches(
+        r"HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs",
+        cheat_names,
+    )
 
-    print("Cleaning Shell bags...")
-    run(r"reg delete \"HKCU\\Software\\Microsoft\\Windows\\Shell\\Bags\" /f")
+    print("Cleaning Shell bags (filtered by cheat names)...")
+    reg_delete_matches(
+        r"HKCU\Software\Microsoft\Windows\Shell\Bags",
+        cheat_names,
+    )
 
-    print("Cleaning Start Menu history...")
-    run(r"reg delete \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\StartPage\" /f")
-    run(r"reg delete \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\StartPage2\" /f")
+    print("Cleaning Start Menu history (filtered by cheat names)...")
+    reg_delete_matches(
+        r"HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\StartPage",
+        cheat_names,
+    )
+    reg_delete_matches(
+        r"HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\StartPage2",
+        cheat_names,
+    )
 
-    print("Cleaning File Explorer address bar history...")
-    run(r"reg delete \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\ComDlg32\\LastVisitedPidlMRU\" /f")
-    run(r"reg delete \"HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\ComDlg32\\LastVisitedPidlMRULegacy\" /f")
+    print("Cleaning File Explorer address bar history (filtered)...")
+    reg_delete_matches(
+        r"HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRU",
+        cheat_names,
+    )
+    reg_delete_matches(
+        r"HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRULegacy",
+        cheat_names,
+    )
 
-    print("Cleaning MUICache...")
-    run(r"reg delete \"HKCU\\Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\Shell\\MuiCache\" /f")
+    print("Cleaning MUICache (filtered by cheat names)...")
+    reg_delete_matches(
+        r"HKCU\Software\Classes\Local Settings\Software\Microsoft\Windows\Shell\MuiCache",
+        cheat_names,
+    )
 
     print("Cleaning DNS Cache...")
     run("ipconfig /flushdns")
@@ -225,13 +283,33 @@ def cleanup(cheat_name: str, cheat_binaries, extra_paths):
         )
         run(cmd)
 
-    print("Cleaning Program Compatibility Assistant history...")
-    compat_store = r"HKCU\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Compatibility Assistant\Store"
-    run(fr"reg delete \"{compat_store}\" /f")
-    run(fr"reg add \"{compat_store}\" /f")
+    print("Cleaning Program Compatibility Assistant history (filtered by cheat names)...")
+    reg_delete_matches(
+        r"HKCU\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Compatibility Assistant\Store",
+        cheat_names,
+    )
 
     print("Stopping Explorer for final cleanup...")
     run("taskkill /f /im explorer.exe")
+
+    print("Resetting Amcache hive (stop appidsvc, rename, restart)...")
+    run("net stop appidsvc /y")
+    amcache = Path(r"C:\\Windows\\AppCompat\\Programs\\Amcache.hve")
+    if amcache.exists():
+        suffix = random.randint(1000, 9999)
+        backup_name = f"Amcache_backup_{suffix}.hve"
+        backup_path = amcache.with_name(backup_name)
+        try:
+            amcache.rename(backup_path)
+            print(f"Renamed Amcache.hve to {backup_name}")
+            try:
+                backup_path.unlink()
+                print(f"Deleted backup hive {backup_name}")
+            except Exception as e:
+                print(f"Failed to delete backup hive {backup_name}: {e}")
+        except Exception as e:
+            print(f"Failed to rename Amcache.hve: {e}")
+    run("net start appidsvc")
 
     print("Deleting CrashDumps...")
     crash_dumps = userprofile / "AppData" / "Local" / "CrashDumps"
@@ -348,3 +426,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
