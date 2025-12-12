@@ -1,3 +1,7 @@
+# Extra/Rant
+
+Fuck you purple for being an actual rat. Making a public one thats a lot better
+
 # Overview
 
 ## Supported Cheats
