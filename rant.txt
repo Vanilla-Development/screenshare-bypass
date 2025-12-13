@@ -20,8 +20,10 @@ You know who you are but basically because of FireRealm going into hibernation, 
 
 But because of Skill and Purple both being rats and exposing a lot of the shit I've kept talking about to them and how I detect cheaters. People are now finding ways around and is making it worse.
 
+Trust me when I say this but because of ownership changes and staff changes I've basically stopped trying anymore and I did say I was posting a closet cheating guide but I stopped myself. Now I want to just make tools for fun and my own enjoyment. You can use any of this for closet cheating and getting away while recording, screensharing, or anything.
+
 Now because I'm basically at my limit, I've fully quit Bedwars and BCA so now I'm making my own projects because I love making concepts but still. I could've ruined all of Competitive If I wanted to since most of it was basically in my own hands.
 
 I love you all <3
 
-Lets see what the future of Bedwars Competitive holds for closet cheating.
+Rewrite is coming soon don't worry and it will be in C++ with more features like Process Hallowing and maybe an actual GUI instead of CLI Window.
