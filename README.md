@@ -1,6 +1,6 @@
 # Extra/Rant
 
-Fuck you purple for being an actual rat. Making a public one thats a lot better
+Fuck you purple for being an actual rat. Rewrite coming soon
 
 # Overview
 
